@@ -3,6 +3,7 @@ import { PrimaryButton } from '../button'
 import Input from '.'
 
 type ToggleInputProps = {
+    id: string
     inputName: string
     labelText?: string
     toggleValue: boolean
@@ -13,6 +14,7 @@ type ToggleInputProps = {
 
 const ToggleCheckbox: FC<ToggleInputProps> = (props: ToggleInputProps) => {
     const {
+        id,
         inputName,
         labelText,
         toggleValue,
@@ -24,7 +26,10 @@ const ToggleCheckbox: FC<ToggleInputProps> = (props: ToggleInputProps) => {
     return (
         <div className="flex items-center justify-center w-full lg:mt-0 mt-2">
             {labelText && (
-                <label htmlFor={inputName} className="mr-4">
+                <label
+                    htmlFor={inputName}
+                    className="mr-4 lg:text-base text-sm"
+                >
                     {labelText}
                 </label>
             )}
@@ -33,7 +38,7 @@ const ToggleCheckbox: FC<ToggleInputProps> = (props: ToggleInputProps) => {
                     role="switch"
                     type="checkbox"
                     name={inputName}
-                    id="toggle-input"
+                    id={id}
                     disabled={disabled}
                     onChange={handleCheckboxToggle}
                     className={`${
@@ -42,11 +47,11 @@ const ToggleCheckbox: FC<ToggleInputProps> = (props: ToggleInputProps) => {
                 />
                 <PrimaryButton
                     text=""
+                    id={id}
                     width="w-3"
                     height="h-3"
                     type="button"
                     name={inputName}
-                    id="toggle-button"
                     disabled={disabled}
                     onClick={handleButtonToggle}
                     buttonClass={`${

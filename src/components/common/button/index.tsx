@@ -17,13 +17,14 @@ export type ButtonProps = Readonly<{
     buttonClass?: string
     isSecondary?: boolean
     secondaryButtonClass?: string
-    buttonIconClass?: string
     hasPCIPII?: boolean
     dataAttribute?: number | string
     pciID?: string
     piiID?: string
     textColour?: string
-    arrowUp?: boolean
+    buttonBackgroundColour?: string
+    buttonHoverColour?: string
+    buttonActiveColour?: string
 }>
 
 export type ButtonEventProps = {

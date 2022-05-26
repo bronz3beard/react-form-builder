@@ -19,13 +19,11 @@ const SecondaryButton: FC<ButtonProps & ButtonEventProps> = (
         childContainerClass,
         children,
         target,
-        buttonIconClass,
         dataAttribute,
         pciID,
         piiID,
         hasPCIPII,
         textColour,
-        arrowUp,
         onClick,
         onMouseUp,
         onMouseDown,
@@ -90,11 +88,8 @@ SecondaryButton.defaultProps = {
     hasPCIPII: false,
     dataAttribute: '',
     textColour: 'text-black',
-    arrowUp: false,
     height: ' h-8',
     width: 'lg:w-56 w-40',
-    buttonIconClass:
-        'w-6 h-6 left-52 top-0 flex-none order-1 flex-grow-0 ml-2 m-0',
     childContainerClass:
         'w-full items-center static text-left not-italic tracking-tight font-base text-xs lg:text-base p-2',
     buttonClass:

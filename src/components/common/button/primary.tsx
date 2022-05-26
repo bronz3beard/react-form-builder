@@ -15,17 +15,18 @@ const PrimaryButton: FC<ButtonProps & ButtonEventProps> = (
         height,
         width,
         buttonClass,
+        buttonBackgroundColour,
+        buttonHoverColour,
+        buttonActiveColour,
         containerClassName,
         childContainerClass,
         children,
         target,
-        buttonIconClass,
         dataAttribute,
         pciID,
         piiID,
         hasPCIPII,
         textColour,
-        arrowUp,
         onClick,
         onMouseUp,
         onMouseDown,
@@ -50,7 +51,7 @@ const PrimaryButton: FC<ButtonProps & ButtonEventProps> = (
                         onMouseUp={onMouseUp}
                         onMouseDown={onMouseDown}
                         type={!type ? 'button' : 'submit'}
-                        className={`${buttonClass} ${height} ${width} ${textColour} ${
+                        className={`${buttonClass} ${height} ${width} ${textColour} ${buttonBackgroundColour} hover:${buttonHoverColour} active:${buttonActiveColour} ${
                             disabled ? 'bg-opacity-70 pointer-events-none' : ''
                         }`}
                         data-attribute={`${dataAttribute}${
@@ -86,15 +87,14 @@ PrimaryButton.defaultProps = {
     hasPCIPII: false,
     dataAttribute: '',
     textColour: 'text-black',
-    arrowUp: false,
     height: 'h-10',
     width: 'lg:w-56 w-40',
-    buttonIconClass:
-        'block w-6 left-52 top-0 flex-none order-1 flex-grow-0 ml-2 p-2',
+    buttonBackgroundColour: 'bg-primary-colour',
+    buttonHoverColour: 'bg-white',
+    buttonActiveColour: 'bg-tertiary-colour',
     childContainerClass:
         'w-full items-center static text-left not-italic tracking-tight font-base text-xs lg:text-base px-2',
-    buttonClass:
-        'flex flex-row items-center bg-white hover:bg-primary-colour active:bg-tertiary-colour font-medium rounded-lg p-2',
+    buttonClass: 'flex flex-row items-center font-medium rounded-lg p-2',
     onClick: () => {
         return
     },
