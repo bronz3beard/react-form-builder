@@ -1,5 +1,6 @@
 import React, { useCallback, FC, Dispatch, MouseEvent } from 'react'
 import { FormBuilderSections } from '../../App'
+import { clearAllLocalStorage } from '../../utils/localStorage'
 import { PrimaryButton } from '../common/button'
 
 type NavButtonProps = {
@@ -55,8 +56,23 @@ const NavButtonRow: FC<NavButtonProps> = (props: NavButtonProps) => {
         [formBuildSection],
     )
 
+    const handleFormReset = () => {
+        location.reload()
+        clearAllLocalStorage()
+    }
+
     return (
         <div className="flex space-x-4 float-right">
+            {formBuildSection !== FormBuilderSections.NAME && (
+                <PrimaryButton
+                    text="Restart Form"
+                    type="button"
+                    width="w-32"
+                    name="form-navigation"
+                    textColour="text-red-500"
+                    onClick={handleFormReset}
+                />
+            )}
             <PrimaryButton
                 text="Back"
                 type="button"
