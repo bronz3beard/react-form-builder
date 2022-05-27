@@ -1,36 +1,29 @@
 import React, { MouseEvent, FC, DragEvent } from 'react'
-import {
-    FormFieldSections,
-    FormFieldType,
-    FormSection,
-    InputType,
-} from '../../formTypes'
+import { FormFieldType, FormSection, InputType } from '../../formTypes'
+import { Field, Section } from '../../hooks/useDragDrop'
 import { PrimaryButton } from '../common/button'
 // import Dropdown from '../common/dropdown'
 
 type FormFieldProps = {
+    field: Field
+    section: Section
     formSections: FormSection[]
-    formFieldTypeList: FormFieldSections
-    handleFieldSectionAdd: (event: MouseEvent<HTMLButtonElement>) => void
-    handleSectionDrop: (event: DragEvent<HTMLDivElement>) => void
-    handleSectionDragStart: (event: DragEvent<HTMLDivElement>) => void
-    handleSectionDragOver: (event: DragEvent<HTMLDivElement>) => void
-    handleFieldDrop: (event: DragEvent<HTMLDivElement>) => void
-    handleFieldDragOver: (event: DragEvent<HTMLDivElement>) => void
-    handleFieldDragStart: (event: DragEvent<HTMLDivElement>) => void
+    handleFormFieldsAdd: (event: MouseEvent<HTMLButtonElement>) => void
+    handleFormFieldsRemove: (event: MouseEvent<HTMLButtonElement>) => void
 }
 
 const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
     const {
+        field,
+        section,
         formSections,
-        handleSectionDrop,
-        handleFieldSectionAdd,
-        handleSectionDragStart,
-        handleSectionDragOver,
-        handleFieldDrop,
-        handleFieldDragOver,
-        handleFieldDragStart,
+        handleFormFieldsAdd,
+        handleFormFieldsRemove,
     } = props
+
+    const { handleFieldDrop, handleFieldDragOver, handleFieldDragStart } = field
+    const { handleSectionDrop, handleSectionDragStart, handleSectionDragOver } =
+        section
 
     return (
         <div className="relative flex flex-col justify-between min-w-0 max-h-[80vh] break-words bg-white rounded p-4 space-y-6 overflow-y-scroll">
@@ -82,7 +75,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                             text={`${InputType[key]}`}
                                                             key={`${InputType[key]}`}
                                                             onClick={
-                                                                handleFieldSectionAdd
+                                                                handleFormFieldsAdd
                                                             }
                                                             textColour="text-white"
                                                         />
@@ -118,11 +111,23 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                                 }
                                                                 className=""
                                                             >
-                                                                <div>
+                                                                <div className="flex justify-between items-center mx-6">
                                                                     {itm.type} (
                                                                     {itm.order +
                                                                         1}
                                                                     )
+                                                                    <PrimaryButton
+                                                                        type="button"
+                                                                        width="w-min"
+                                                                        name="remove-field"
+                                                                        id={`${itm.id}#${item.id}`}
+                                                                        text="X"
+                                                                        key={`${InputType[key]}`}
+                                                                        onClick={
+                                                                            handleFormFieldsRemove
+                                                                        }
+                                                                        textColour="text-white"
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -130,6 +135,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                 })}
                                     </div>
                                 </div>
+                                {item.hasLineBreak && <hr className="mt-4" />}
                             </div>
                         )
                     })}

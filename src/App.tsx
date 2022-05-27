@@ -1,27 +1,15 @@
-import React, {
-    FC,
-    useEffect,
-    useState,
-    ChangeEvent,
-    MouseEvent,
-    useCallback,
-    DragEvent,
-} from 'react'
+import React, { FC, ChangeEvent, MouseEvent } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { PrimaryButton } from './components/common/button'
 import Title from './components/common/title'
 import FormFields from './components/formBuilderSections/formFields'
 import FormName from './components/formBuilderSections/formName'
 import FormSections from './components/formBuilderSections/formSections'
-import {
-    FormSection,
-    FormFieldType,
-    InputType,
-    FormFieldSections,
-} from './formTypes'
-import { buildFormFieldSections } from './utils/formHelpers'
+import NavButtonRow from './components/navButtons'
+import { FormSection, FormFieldType, InputType } from './formTypes'
+import useDragDrop from './hooks/useDragDrop'
+import useStateWithLocal from './hooks/useStateWithLocal'
 
-enum FormBuilderSections {
+export enum FormBuilderSections {
     NAME,
     SECTIONS,
     INPUT_TYPES,
@@ -36,17 +24,17 @@ export interface AppProps {
 const App: FC<AppProps> = (props: AppProps) => {
     const { hostName } = props
     const [formBuildSection, setFormBuildSection] =
-        useState<FormBuilderSections>(FormBuilderSections.NAME)
-    const [formName, setFormName] = useState<string>('')
-    const [sectionCount, setSectionCount] = useState<number>(0)
-    const [formSections, setFormSections] = useState<FormSection[]>([])
-    const [formFieldTypeList, setFormFieldTypeList] =
-        useState<FormFieldSections>({})
-    const [sectionDragId, setSectionDragId] = useState<number>(0)
-    const [fieldDragId, setFieldDragId] = useState<string>('')
-    // useEffect(() => {
-    //     setFormFieldTypeList()
-    // }, [formSections])
+        useStateWithLocal<FormBuilderSections>(
+            'formBuildSection',
+            FormBuilderSections.NAME,
+        )
+    const [formName, setFormName] = useStateWithLocal<string>('formName', '')
+    const [formSections, setFormSections] = useStateWithLocal<FormSection[]>(
+        'formSections',
+        [],
+    )
+
+    const { section, field } = useDragDrop(formSections, setFormSections)
 
     const handleFormNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.currentTarget
@@ -56,9 +44,7 @@ const App: FC<AppProps> = (props: AppProps) => {
     const handleFormSectionTitle = (event: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = event.currentTarget
 
-        const sectionUpdate = formSections.find(
-            item => item.id === parseInt(id, 10),
-        )
+        const sectionUpdate = formSections.find(item => item.id === id)
 
         if (sectionUpdate) {
             sectionUpdate.title = value
@@ -72,9 +58,7 @@ const App: FC<AppProps> = (props: AppProps) => {
     ) => {
         const { id } = event.currentTarget
 
-        const sectionUpdate = formSections.find(
-            item => item.id === parseInt(id, 10),
-        )
+        const sectionUpdate = formSections.find(item => item.id === id, 10)
 
         if (sectionUpdate) {
             sectionUpdate.hasLineBreak = !sectionUpdate.hasLineBreak
@@ -85,10 +69,9 @@ const App: FC<AppProps> = (props: AppProps) => {
 
     const handleFormSectionsAdd = (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        setSectionCount(sectionCount + 1)
 
         const section: FormSection = {
-            id: sectionCount,
+            id: uuidv4(),
             order: formSections.length ?? 0,
             title: '',
             hasLineBreak: false,
@@ -102,11 +85,7 @@ const App: FC<AppProps> = (props: AppProps) => {
         const { id } = event.currentTarget
         event.preventDefault()
 
-        setSectionCount(count => count - 1)
-
-        const newFormSections = formSections.filter(
-            item => item.id !== parseInt(id, 10),
-        )
+        const newFormSections = formSections.filter(item => item.id !== id, 10)
 
         setFormSections(newFormSections)
     }
@@ -115,9 +94,7 @@ const App: FC<AppProps> = (props: AppProps) => {
         event.preventDefault()
         const { id, name } = event.currentTarget
 
-        const newFormField = formSections.find(
-            item => item.id === parseInt(id, 10),
-        )
+        const newFormField = formSections.find(item => item.id === id, 10)
 
         if (newFormField) {
             const field: FormFieldType = {
@@ -129,168 +106,29 @@ const App: FC<AppProps> = (props: AppProps) => {
 
             newFormField.inputTypes = [...newFormField.inputTypes, field]
 
-            setFormFieldTypeList(buildFormFieldSections(formSections))
+            setFormSections([...formSections])
         }
     }
 
     const handleFormFieldsRemove = (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
         const { id } = event.currentTarget
-        event.preventDefault()
-        setSectionCount(count => count - 1)
-        const newFormSections = formSections.filter(
-            item => item.id !== parseInt(id, 10),
-        )
 
-        // newFormSections.pop()
-
-        setFormFieldTypeList(buildFormFieldSections(formSections))
-    }
-
-    const handleSectionDragOver = (event: DragEvent<HTMLDivElement>) => {
-        event.preventDefault()
-    }
-
-    const handleSectionDragStart = (event: DragEvent<HTMLDivElement>) => {
-        const id = event.currentTarget.id
-
-        setSectionDragId(parseInt(id, 10))
-    }
-
-    const handleSectionDrop = (event: DragEvent<HTMLDivElement>) => {
-        const id = parseInt(event.currentTarget.id, 10)
-
-        const oldSection = formSections.find(item => item.id === sectionDragId)
-        const newSection = formSections.find(item => item.id === id)
-
-        const dragSectionOrder = oldSection?.order ?? 0
-        const dropSectionOrder = newSection?.order ?? 0
-
-        const updateSectionOrder = formSections.map((item: FormSection) => {
-            const oldSectionFields = item.inputTypes.find(
-                type => type.sectionId === sectionDragId,
-            )
-            const newSectionFields = item.inputTypes.find(
-                type => type.sectionId === id,
-            )
-
-            const dragFieldSectionId =
-                oldSectionFields?.sectionId ?? sectionDragId
-
-            const dropFieldSectionId = newSectionFields?.sectionId ?? id
-
-            if (item.id === sectionDragId) {
-                item.order = dropSectionOrder
-                if (newSectionFields) {
-                    newSectionFields.sectionId = dropFieldSectionId
-                }
-            }
-            if (item.id === id) {
-                item.order = dragSectionOrder
-                if (oldSectionFields) {
-                    oldSectionFields.sectionId = dragFieldSectionId
-                }
-            }
-            return item
-        })
-
-        setFormSections(updateSectionOrder)
-    }
-
-    const handleFieldDrop = (event: DragEvent<HTMLDivElement>) => {
-        const id = event.currentTarget.id
         const idValues = id.split('#')
 
         const fieldId = idValues[0]
-        const sectionId = parseInt(idValues[1], 10)
+        const sectionId = idValues[1]
 
-        const getSection = formSections.find(item => item.id === sectionId)
+        const newFormSections = formSections.find(item => item.id === sectionId)
 
-        if (getSection) {
-            const oldSection = getSection.inputTypes.find(
-                item => item.id === fieldDragId,
-            )
-            const newSection = getSection.inputTypes.find(
-                item => item.id === fieldId,
+        if (newFormSections) {
+            newFormSections.inputTypes = newFormSections.inputTypes.filter(
+                item => item.id !== fieldId,
             )
 
-            const dragFieldOrder = oldSection?.order ?? 0
-            const dropFieldOrder = newSection?.order ?? 0
-
-            getSection.inputTypes.map((item: FormFieldType) => {
-                if (item.id === fieldDragId) {
-                    item.order = dropFieldOrder
-                }
-                if (item.id === fieldId) {
-                    item.order = dragFieldOrder
-                }
-
-                return item
-            })
-
-            setFormFieldTypeList(
-                buildFormFieldSections([...formSections, getSection]),
-            )
+            setFormSections([...formSections])
         }
     }
-
-    const handleFieldDragOver = (event: DragEvent<HTMLDivElement>) => {
-        event.preventDefault()
-    }
-
-    const handleFieldDragStart = (event: DragEvent<HTMLDivElement>) => {
-        const id = event.currentTarget.id
-
-        const idValues = id.split('#')
-        const fieldId = idValues[0]
-
-        setFieldDragId(fieldId)
-    }
-
-    const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-
-        let backToSection: FormBuilderSections = formBuildSection
-
-        if (formBuildSection === FormBuilderSections.NAME) {
-            backToSection = FormBuilderSections.SECTIONS
-        } else if (formBuildSection === FormBuilderSections.SECTIONS) {
-            backToSection = FormBuilderSections.INPUT_TYPES
-        } else if (formBuildSection === FormBuilderSections.INPUT_TYPES) {
-            backToSection = FormBuilderSections.INPUT_SECTION_ORDER
-        } else if (
-            formBuildSection === FormBuilderSections.INPUT_SECTION_ORDER
-        ) {
-            backToSection = FormBuilderSections.SAVE_EDIT
-        } else if (formBuildSection === FormBuilderSections.SAVE_EDIT) {
-            backToSection = FormBuilderSections.SAVE_EDIT
-        }
-
-        setFormBuildSection(backToSection)
-    }
-
-    const handleBack = useCallback(
-        (event: MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault()
-            let backToSection: FormBuilderSections = formBuildSection
-
-            if (formBuildSection === FormBuilderSections.NAME) {
-                backToSection = FormBuilderSections.NAME
-            } else if (formBuildSection === FormBuilderSections.SECTIONS) {
-                backToSection = FormBuilderSections.NAME
-            } else if (formBuildSection === FormBuilderSections.INPUT_TYPES) {
-                backToSection = FormBuilderSections.SECTIONS
-            } else if (
-                formBuildSection === FormBuilderSections.INPUT_SECTION_ORDER
-            ) {
-                backToSection = FormBuilderSections.INPUT_TYPES
-            } else if (formBuildSection === FormBuilderSections.SAVE_EDIT) {
-                backToSection = FormBuilderSections.INPUT_SECTION_ORDER
-            }
-
-            setFormBuildSection(backToSection)
-        },
-        [formBuildSection],
-    )
 
     return (
         <div className="flex justify-center w-full h-full my-2">
@@ -326,35 +164,17 @@ const App: FC<AppProps> = (props: AppProps) => {
                         {formBuildSection ===
                             FormBuilderSections.INPUT_TYPES && (
                             <FormFields
+                                field={field}
+                                section={section}
                                 formSections={formSections}
-                                formFieldTypeList={formFieldTypeList}
-                                handleFieldSectionAdd={handleFormFieldsAdd}
-                                handleSectionDrop={handleSectionDrop}
-                                handleSectionDragStart={handleSectionDragStart}
-                                handleSectionDragOver={handleSectionDragOver}
-                                handleFieldDrop={handleFieldDrop}
-                                handleFieldDragOver={handleFieldDragOver}
-                                handleFieldDragStart={handleFieldDragStart}
+                                handleFormFieldsAdd={handleFormFieldsAdd}
+                                handleFormFieldsRemove={handleFormFieldsRemove}
                             />
                         )}
-                        <div className="flex space-x-4 float-right">
-                            <PrimaryButton
-                                text="Back"
-                                type="button"
-                                width="w-16"
-                                onClick={handleBack}
-                                name="form-navigation"
-                                textColour="text-white"
-                            />
-                            <PrimaryButton
-                                text="Next"
-                                type="button"
-                                width="w-16"
-                                onClick={handleNext}
-                                name="form-navigation"
-                                textColour="text-white"
-                            />
-                        </div>
+                        <NavButtonRow
+                            formBuildSection={formBuildSection}
+                            setFormBuildSection={setFormBuildSection}
+                        />
                     </div>
                 </div>
             </div>

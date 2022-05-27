@@ -24,15 +24,11 @@ export type FormFieldType = {
     id: string
     type: string
     order: number
-    sectionId: number
-}
-
-export type FormFieldSections = {
-    [index: string]: FormFieldType[]
+    sectionId: string
 }
 
 export type FormSection = {
-    id: number
+    id: string
     order: number
     title: string
     hasLineBreak: boolean

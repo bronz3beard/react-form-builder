@@ -21,3 +21,5 @@ export const getDescendantPropString = (field: string): string => {
 
     return fieldArray[fieldArray.length - 1]
 }
+
+export const isClientSide = () => typeof window !== 'undefined'
