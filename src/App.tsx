@@ -124,7 +124,7 @@ const App: FC<AppProps> = (props: AppProps) => {
                 id: uuidv4(),
                 sectionId: newFormField.id,
                 type: InputType[parseInt(name, 10)],
-                order: formSections[newFormField.id].inputTypes.length ?? 0,
+                order: newFormField.inputTypes.length ?? 0,
             }
 
             newFormField.inputTypes = [...newFormField.inputTypes, field]
@@ -175,15 +175,8 @@ const App: FC<AppProps> = (props: AppProps) => {
 
             const dragFieldSectionId =
                 oldSectionFields?.sectionId ?? sectionDragId
-            console.log(
-                '🚀 ~ file: App.tsx ~ line 180 ~ updateSectionOrder ~ dragFieldSectionId',
-                dragFieldSectionId,
-            )
+
             const dropFieldSectionId = newSectionFields?.sectionId ?? id
-            console.log(
-                '🚀 ~ file: App.tsx ~ line 183 ~ updateSectionOrder ~ dropFieldSectionId',
-                dropFieldSectionId,
-            )
 
             if (item.id === sectionDragId) {
                 item.order = dropSectionOrder
@@ -210,28 +203,34 @@ const App: FC<AppProps> = (props: AppProps) => {
         const fieldId = idValues[0]
         const sectionId = parseInt(idValues[1], 10)
 
-        const oldSection = formSections[sectionId].inputTypes.find(
-            item => item.id === fieldDragId,
-        )
-        const newSection = formSections[sectionId].inputTypes.find(
-            item => item.id === fieldId,
-        )
+        const getSection = formSections.find(item => item.id === sectionId)
 
-        const dragFieldOrder = oldSection?.order ?? 0
-        const dropFieldOrder = newSection?.order ?? 0
+        if (getSection) {
+            const oldSection = getSection.inputTypes.find(
+                item => item.id === fieldDragId,
+            )
+            const newSection = getSection.inputTypes.find(
+                item => item.id === fieldId,
+            )
 
-        formSections[sectionId].inputTypes.map((item: FormFieldType) => {
-            if (item.id === fieldDragId) {
-                item.order = dropFieldOrder
-            }
-            if (item.id === fieldId) {
-                item.order = dragFieldOrder
-            }
+            const dragFieldOrder = oldSection?.order ?? 0
+            const dropFieldOrder = newSection?.order ?? 0
 
-            return item
-        })
+            getSection.inputTypes.map((item: FormFieldType) => {
+                if (item.id === fieldDragId) {
+                    item.order = dropFieldOrder
+                }
+                if (item.id === fieldId) {
+                    item.order = dragFieldOrder
+                }
 
-        setFormFieldTypeList(buildFormFieldSections(formSections))
+                return item
+            })
+
+            setFormFieldTypeList(
+                buildFormFieldSections([...formSections, getSection]),
+            )
+        }
     }
 
     const handleFieldDragOver = (event: DragEvent<HTMLDivElement>) => {

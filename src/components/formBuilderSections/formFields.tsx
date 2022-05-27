@@ -33,7 +33,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
     } = props
 
     return (
-        <div className="relative flex flex-col justify-between min-w-0 max-h-[80vh] break-words bg-white rounded p-4 overflow-y-scroll">
+        <div className="relative flex flex-col justify-between min-w-0 max-h-[80vh] break-words bg-white rounded p-4 space-y-6 overflow-y-scroll">
             {formSections?.length &&
                 formSections
                     .sort((a, b) => a.order - b.order)
@@ -44,19 +44,19 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                 id={`${item.id}`}
                                 onDrop={handleSectionDrop}
                                 onDragOver={handleSectionDragOver}
+                                className="w-full"
                             >
                                 <div
                                     draggable
                                     key={item.order}
                                     id={`${item.id}`}
                                     onDragStart={handleSectionDragStart}
-                                    className="lg:w-1/3 w-full lg:my-0 my-2"
+                                    className="w-full lg:my-0 my-2 border-2 hover:cursor-grab active:cursor-grabbing rounded-lg text-base uppercase"
                                 >
-                                    <div className="w-full text-black text-xl p-6">
+                                    <div className="w-full text-xl p-6 bg-gray-300 text-white">
                                         {item.title}
                                     </div>
-
-                                    <div className="flex justify-center items-center space-x-2">
+                                    <div className="flex flex-wrap justify-center items-center w-full">
                                         {(
                                             Object.keys(InputType) as Array<
                                                 keyof typeof InputType
@@ -68,20 +68,25 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                         `${InputType[key]}`,
                                                     ) && InputType[key] !== 0,
                                             )
-                                            .map(key => {
+                                            .map((key, index) => {
                                                 return (
-                                                    <PrimaryButton
-                                                        type="button"
-                                                        name={key}
-                                                        width="w-min"
-                                                        id={`${item.id}`}
-                                                        text={`${InputType[key]}`}
-                                                        key={`${InputType[key]}`}
-                                                        onClick={
-                                                            handleFieldSectionAdd
-                                                        }
-                                                        textColour="text-white"
-                                                    />
+                                                    <div
+                                                        className="m-2"
+                                                        key={`${index}-${InputType[key]}`}
+                                                    >
+                                                        <PrimaryButton
+                                                            type="button"
+                                                            name={key}
+                                                            width="w-min"
+                                                            id={`${item.id}`}
+                                                            text={`${InputType[key]}`}
+                                                            key={`${InputType[key]}`}
+                                                            onClick={
+                                                                handleFieldSectionAdd
+                                                            }
+                                                            textColour="text-white"
+                                                        />
+                                                    </div>
                                                 )
                                             })}
                                     </div>
@@ -94,7 +99,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                 .map((itm: FormFieldType) => {
                                                     return (
                                                         <div
-                                                            key={itm.order}
+                                                            key={`${item.id}-${itm.order}`}
                                                             id={`${itm.id}#${item.id}`}
                                                             onDrop={
                                                                 handleFieldDrop
@@ -102,6 +107,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                             onDragOver={
                                                                 handleFieldDragOver
                                                             }
+                                                            className="w-full p-2 my-2 border-2 hover:cursor-grab active:cursor-grabbing bg-gray-300 text-white rounded-lg text-base uppercase"
                                                         >
                                                             <div
                                                                 draggable
@@ -110,9 +116,13 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                                 onDragStart={
                                                                     handleFieldDragStart
                                                                 }
+                                                                className=""
                                                             >
                                                                 <div>
-                                                                    {itm.type}
+                                                                    {itm.type} (
+                                                                    {itm.order +
+                                                                        1}
+                                                                    )
                                                                 </div>
                                                             </div>
                                                         </div>
