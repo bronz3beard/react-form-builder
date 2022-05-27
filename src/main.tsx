@@ -10,6 +10,6 @@ const root = createRoot(container!)
 
 root.render(
     <StrictMode>
-        <App hostName="Rory's" />
+        <App hostName="Build It - " />
     </StrictMode>,
 )
