@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Title from './components/common/title'
 import FormFields from './components/formBuilderSections/formFields'
 import FormName from './components/formBuilderSections/formName'
+import FormReview from './components/formBuilderSections/formReview'
 import FormSections from './components/formBuilderSections/formSections'
 import NavButtonRow from './components/navButtons'
 import { FormSection, FormFieldType, InputType } from './formTypes'
@@ -13,7 +14,7 @@ export enum FormBuilderSections {
     NAME,
     SECTIONS,
     INPUT_TYPES,
-    INPUT_SECTION_ORDER,
+    REVIEW,
     SAVE_EDIT,
 }
 
@@ -171,6 +172,10 @@ const App: FC<AppProps> = (props: AppProps) => {
                                 handleFormFieldsRemove={handleFormFieldsRemove}
                             />
                         )}
+                        {formBuildSection === FormBuilderSections.REVIEW && (
+                            <FormReview formSections={formSections} />
+                        )}
+
                         <NavButtonRow
                             formBuildSection={formBuildSection}
                             setFormBuildSection={setFormBuildSection}

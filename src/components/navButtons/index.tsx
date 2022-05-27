@@ -21,10 +21,8 @@ const NavButtonRow: FC<NavButtonProps> = (props: NavButtonProps) => {
             } else if (formBuildSection === FormBuilderSections.SECTIONS) {
                 toNextSection = FormBuilderSections.INPUT_TYPES
             } else if (formBuildSection === FormBuilderSections.INPUT_TYPES) {
-                toNextSection = FormBuilderSections.INPUT_SECTION_ORDER
-            } else if (
-                formBuildSection === FormBuilderSections.INPUT_SECTION_ORDER
-            ) {
+                toNextSection = FormBuilderSections.REVIEW
+            } else if (formBuildSection === FormBuilderSections.REVIEW) {
                 toNextSection = FormBuilderSections.SAVE_EDIT
             } else if (formBuildSection === FormBuilderSections.SAVE_EDIT) {
                 toNextSection = FormBuilderSections.SAVE_EDIT
@@ -46,12 +44,10 @@ const NavButtonRow: FC<NavButtonProps> = (props: NavButtonProps) => {
                 backToSection = FormBuilderSections.NAME
             } else if (formBuildSection === FormBuilderSections.INPUT_TYPES) {
                 backToSection = FormBuilderSections.SECTIONS
-            } else if (
-                formBuildSection === FormBuilderSections.INPUT_SECTION_ORDER
-            ) {
+            } else if (formBuildSection === FormBuilderSections.REVIEW) {
                 backToSection = FormBuilderSections.INPUT_TYPES
             } else if (formBuildSection === FormBuilderSections.SAVE_EDIT) {
-                backToSection = FormBuilderSections.INPUT_SECTION_ORDER
+                backToSection = FormBuilderSections.REVIEW
             }
 
             setFormBuildSection(backToSection)
