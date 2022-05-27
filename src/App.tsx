@@ -111,9 +111,9 @@ const App: FC<AppProps> = (props: AppProps) => {
         setFormSections(newFormSections)
     }
 
-    const handleFormFieldsAdd = (event: ChangeEvent<HTMLSelectElement>) => {
+    const handleFormFieldsAdd = (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        const { id, value } = event.currentTarget
+        const { id, name } = event.currentTarget
 
         const newFormField = formSections.find(
             item => item.id === parseInt(id, 10),
@@ -122,15 +122,12 @@ const App: FC<AppProps> = (props: AppProps) => {
         if (newFormField) {
             const field: FormFieldType = {
                 id: uuidv4(),
-                sectionId: parseInt(id, 10),
-                type: InputType[parseInt(value, 10)],
-                order: formSections[parseInt(id, 10)].inputTypes.length ?? 0,
+                sectionId: newFormField.id,
+                type: InputType[parseInt(name, 10)],
+                order: formSections[newFormField.id].inputTypes.length ?? 0,
             }
 
-            newFormField.inputTypes = [
-                ...formSections[parseInt(id, 10)].inputTypes,
-                field,
-            ]
+            newFormField.inputTypes = [...newFormField.inputTypes, field]
 
             setFormFieldTypeList(buildFormFieldSections(formSections))
         }
@@ -169,11 +166,36 @@ const App: FC<AppProps> = (props: AppProps) => {
         const dropSectionOrder = newSection?.order ?? 0
 
         const updateSectionOrder = formSections.map((item: FormSection) => {
+            const oldSectionFields = item.inputTypes.find(
+                type => type.sectionId === sectionDragId,
+            )
+            const newSectionFields = item.inputTypes.find(
+                type => type.sectionId === id,
+            )
+
+            const dragFieldSectionId =
+                oldSectionFields?.sectionId ?? sectionDragId
+            console.log(
+                '🚀 ~ file: App.tsx ~ line 180 ~ updateSectionOrder ~ dragFieldSectionId',
+                dragFieldSectionId,
+            )
+            const dropFieldSectionId = newSectionFields?.sectionId ?? id
+            console.log(
+                '🚀 ~ file: App.tsx ~ line 183 ~ updateSectionOrder ~ dropFieldSectionId',
+                dropFieldSectionId,
+            )
+
             if (item.id === sectionDragId) {
                 item.order = dropSectionOrder
+                if (newSectionFields) {
+                    newSectionFields.sectionId = dropFieldSectionId
+                }
             }
             if (item.id === id) {
                 item.order = dragSectionOrder
+                if (oldSectionFields) {
+                    oldSectionFields.sectionId = dragFieldSectionId
+                }
             }
             return item
         })
@@ -184,10 +206,7 @@ const App: FC<AppProps> = (props: AppProps) => {
     const handleFieldDrop = (event: DragEvent<HTMLDivElement>) => {
         const id = event.currentTarget.id
         const idValues = id.split('#')
-        console.log(
-            '🚀 ~ file: App.tsx ~ line 187 ~ handleFieldDrop ~ idValues',
-            idValues,
-        )
+
         const fieldId = idValues[0]
         const sectionId = parseInt(idValues[1], 10)
 
@@ -310,7 +329,7 @@ const App: FC<AppProps> = (props: AppProps) => {
                             <FormFields
                                 formSections={formSections}
                                 formFieldTypeList={formFieldTypeList}
-                                handleFieldSelectChange={handleFormFieldsAdd}
+                                handleFieldSectionAdd={handleFormFieldsAdd}
                                 handleSectionDrop={handleSectionDrop}
                                 handleSectionDragStart={handleSectionDragStart}
                                 handleSectionDragOver={handleSectionDragOver}

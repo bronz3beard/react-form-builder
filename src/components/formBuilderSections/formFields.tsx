@@ -1,16 +1,17 @@
-import React, { ChangeEvent, FC, DragEvent } from 'react'
+import React, { MouseEvent, FC, DragEvent } from 'react'
 import {
     FormFieldSections,
     FormFieldType,
     FormSection,
     InputType,
 } from '../../formTypes'
-import Dropdown from '../common/dropdown'
+import { PrimaryButton } from '../common/button'
+// import Dropdown from '../common/dropdown'
 
 type FormFieldProps = {
     formSections: FormSection[]
     formFieldTypeList: FormFieldSections
-    handleFieldSelectChange: (event: ChangeEvent<HTMLSelectElement>) => void
+    handleFieldSectionAdd: (event: MouseEvent<HTMLButtonElement>) => void
     handleSectionDrop: (event: DragEvent<HTMLDivElement>) => void
     handleSectionDragStart: (event: DragEvent<HTMLDivElement>) => void
     handleSectionDragOver: (event: DragEvent<HTMLDivElement>) => void
@@ -23,7 +24,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
     const {
         formSections,
         handleSectionDrop,
-        handleFieldSelectChange,
+        handleFieldSectionAdd,
         handleSectionDragStart,
         handleSectionDragOver,
         handleFieldDrop,
@@ -37,10 +38,6 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                 formSections
                     .sort((a, b) => a.order - b.order)
                     .map((item: FormSection, key) => {
-                        console.log(
-                            '🚀 ~ file: formFields.tsx ~ line 41 ~ .map ~ item.inputTypes',
-                            item.inputTypes?.length > 0 && item.inputTypes,
-                        )
                         return (
                             <div
                                 key={key}
@@ -59,32 +56,34 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                         {item.title}
                                     </div>
 
-                                    <div>
-                                        <Dropdown
-                                            name="field"
-                                            value="value"
-                                            id={`${item.id}`}
-                                            optionValue="label"
-                                            optionId="value"
-                                            defaultValue=""
-                                            optionsArray={(
-                                                Object.keys(InputType) as Array<
-                                                    keyof typeof InputType
-                                                >
+                                    <div className="flex justify-center items-center space-x-2">
+                                        {(
+                                            Object.keys(InputType) as Array<
+                                                keyof typeof InputType
+                                            >
+                                        )
+                                            .filter(
+                                                key =>
+                                                    !parseInt(
+                                                        `${InputType[key]}`,
+                                                    ) && InputType[key] !== 0,
                                             )
-                                                .filter(
-                                                    key =>
-                                                        !parseInt(
-                                                            `${InputType[key]}`,
-                                                        ) &&
-                                                        InputType[key] !== 0,
+                                            .map(key => {
+                                                return (
+                                                    <PrimaryButton
+                                                        type="button"
+                                                        name={key}
+                                                        width="w-min"
+                                                        id={`${item.id}`}
+                                                        text={`${InputType[key]}`}
+                                                        key={`${InputType[key]}`}
+                                                        onClick={
+                                                            handleFieldSectionAdd
+                                                        }
+                                                        textColour="text-white"
+                                                    />
                                                 )
-                                                .map(key => ({
-                                                    value: key,
-                                                    label: `${InputType[key]}`,
-                                                }))}
-                                            onChange={handleFieldSelectChange}
-                                        />
+                                            })}
                                     </div>
                                     <div>
                                         {item.inputTypes?.length > 0 &&
@@ -96,7 +95,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                     return (
                                                         <div
                                                             key={itm.order}
-                                                            id={`${itm.id}#${itm.sectionId}`}
+                                                            id={`${itm.id}#${item.id}`}
                                                             onDrop={
                                                                 handleFieldDrop
                                                             }
@@ -107,7 +106,7 @@ const FormFields: FC<FormFieldProps> = (props: FormFieldProps) => {
                                                             <div
                                                                 draggable
                                                                 key={itm.id}
-                                                                id={`${itm.id}#${itm.sectionId}`}
+                                                                id={`${itm.id}#${item.id}`}
                                                                 onDragStart={
                                                                     handleFieldDragStart
                                                                 }
