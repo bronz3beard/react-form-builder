@@ -133,7 +133,7 @@ const App: FC<AppProps> = (props: AppProps) => {
   }
 
   return (
-    <div className="flex justify-center w-full h-full">
+    <div className="flex justify-center w-full h-full overflow-x-hidden">
       <div
         className={`${
           formBuildSection === FormBuilderSections.REVIEW ? 'h-full' : ''
