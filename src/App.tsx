@@ -175,7 +175,10 @@ const App: FC<AppProps> = (props: AppProps) => {
               <FormReview formSections={formSections} />
             )}
             {formBuildSection === FormBuilderSections.SAVE_EDIT && (
-              <FormSaveOptions formSections={formSections} />
+              <FormSaveOptions
+                formName={formName}
+                formSections={formSections}
+              />
             )}
             <NavButtonRow
               formBuildSection={formBuildSection}

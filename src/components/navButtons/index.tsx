@@ -62,34 +62,41 @@ const NavButtonRow: FC<NavButtonProps> = (props: NavButtonProps) => {
     }
 
     return (
-        <div className="flex space-x-4 float-right">
-            {formBuildSection !== FormBuilderSections.NAME && (
-                <PrimaryButton
-                    text="Restart Form"
-                    type="button"
-                    width="w-32"
-                    name="form-navigation"
-                    textColour="text-red-500"
-                    onClick={handleFormReset}
-                />
-            )}
-            <PrimaryButton
-                text="Back"
-                type="button"
-                width="w-16"
-                onClick={handleBack}
-                name="form-navigation"
-                textColour="text-white"
-            />
-            <PrimaryButton
-                text="Next"
-                type="button"
-                width="w-16"
-                onClick={handleNext}
-                name="form-navigation"
-                textColour="text-white"
-            />
-        </div>
+      <div className="flex space-x-4 float-right">
+        {formBuildSection !== FormBuilderSections.NAME && (
+          <PrimaryButton
+            text="Restart Form"
+            type="button"
+            width="w-32"
+            name="form-navigation"
+            textColour="text-white"
+            onClick={handleFormReset}
+            buttonBackgroundColour="bg-red-500"
+            buttonClass="flex flex-row items-center rounded-lg font-medium p-2"
+            childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
+          />
+        )}
+        <PrimaryButton
+          text="Back"
+          type="button"
+          width="w-16"
+          onClick={handleBack}
+          name="form-navigation"
+          textColour="text-white"
+          buttonClass="flex flex-row items-center rounded-lg font-medium p-2"
+          childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
+        />
+        <PrimaryButton
+          text="Next"
+          type="button"
+          width="w-16"
+          onClick={handleNext}
+          name="form-navigation"
+          textColour="text-white"
+          buttonClass="flex flex-row items-center rounded-lg font-medium p-2"
+          childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
+        />
+      </div>
     )
 }
 

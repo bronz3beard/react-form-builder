@@ -1,62 +1,56 @@
-import React, { FC, MouseEvent } from 'react'
+import React, { FC, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
 import { FormSection } from '../../formTypes'
-import { PrimaryButton } from '../common/button'
 
 type FormSaveProps = {
-    formSections: FormSection[]
+  formName: string
+  formSections: FormSection[]
 }
 
 const FormSaveOptions: FC<FormSaveProps> = (props: FormSaveProps) => {
-    const { formSections } = props
-    console.log(
-        '🚀 ~ file: formSaveOptions.tsx ~ line 11 ~ formSections',
-        formSections,
-    )
+  const { formName, formSections } = props
+  const [cSVExportData, setCSVExportData] = useState<string[][]>([])
 
-    // const createExportCSV = (arrayHeader, arrayData, delimiter, fileName) => {
-    //     const header = arrayHeader.join(delimiter) + '\n'
-    //     let csv = header
+  useEffect(() => {
+    const createExportCSV = () => {
+      const fields: string[][] = []
+      const columns: string[] = []
+      const arrayLength: number = formSections.length
 
-    //     arrayData.forEach(obj => {
-    //         const row = []
-    //         for (key in obj) {
-    //             if (obj.hasOwnProperty(key)) {
-    //                 row.push(obj[key])
-    //             }
-    //         }
-    //         csv += row.join(delimiter) + '\n'
-    //     })
+      for (let i = 0; i < arrayLength; i += 1) {
+        fields[i] = []
+      }
 
-    //     const csvData = new Blob([csv], { type: 'text/csv' })
-    //     const csvUrl = URL.createObjectURL(csvData)
+      formSections.forEach((value, i) => {
+        const headerTitle = value.title
+        fields[i % arrayLength].push(headerTitle)
+        columns.push('')
 
-    //     // hiddenElement.target = '_blank';
-    //     // hiddenElement.download = fileName + '.csv';
-    //     // hiddenElement.click();
-    //     window.open(csvUrl)
-    // }
+        value.inputTypes.forEach((itm, j) => {
+          fields[i % arrayLength].push(itm.type)
+        })
+      })
 
-    const downloadCSV = (event: MouseEvent<HTMLButtonElement>) => {
-        // const dummyData = 'rahul,delhi,accountsdept\n'
-        // const csvContent = `data:text/csv;charset=utf-8,${dummyData}`
-        // const encodedURI = encodeURI(csvContent)
-        // window.open(encodedURI)
-        // createExportCSV()
+      setCSVExportData([columns, ...fields])
     }
 
-    return (
-        <div className="w-full flex lg:flex-row flex-col items-start justify-center my-2 p-2 border border-1 border-gray-200 rounded-md">
-            <div className="lg:w-1/2 w-full">
-                <PrimaryButton
-                    id="csv"
-                    type="button"
-                    name="download-csv"
-                    text="Download CSV"
-                    onClick={downloadCSV}
-                />
-            </div>
-        </div>
-    )
+    createExportCSV()
+  }, [])
+
+  return (
+    <div className="w-full flex lg:flex-row flex-col items-start justify-center my-2 p-2 border border-1 border-gray-200 rounded-md">
+      <div className="lg:w-1/2 w-full">
+        <CSVLink
+          target="_blank"
+          data={cSVExportData}
+          filename={`${formName}.csv`}
+          className="flex flex-row w-full items-center static text-center text-white bg-primary-colour not-italic tracking-tight font-base text-xs lg:text-base px-2 font-medium rounded-lg p-2"
+        >
+          Download CSV
+        </CSVLink>
+      </div>
+    </div>
+  )
 }
 
 export default FormSaveOptions

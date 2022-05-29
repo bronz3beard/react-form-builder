@@ -56,9 +56,9 @@ const handleSectionClick = (event: MouseEvent<HTMLButtonElement>) => {
 
 return (
   <div className="flex">
-    <span className="fixed top-0 left-0 w-max bg-white overflow-hidden content-center z-40">
-      <div className="lg:w-64 h-screen flex flex-col overflow-y-scroll space-y-4">
-        <h2 className="text-center text-2xl bg-red-200 flex justify-center items-center h-10">
+    <span className="lg:fixed absolute lg:w-max w-full top-0 left-0 bg-white overflow-hidden content-center z-40">
+      <div className="lg:w-64 lg:h-screen h-min flex flex-col overflow-y-scroll lg:space-y-4 space-y-1">
+        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10">
           Select Form Section
         </h2>
         {formSections?.length &&
@@ -80,31 +80,38 @@ return (
                 />
               )
             })}
+        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10">
+          Select a Form Field Type
+        </h2>
+        <div className="flex flex-wrap lg:justify-start justify-center items-center my-8">
+          {(Object.keys(InputType) as Array<keyof typeof InputType>)
+            .filter(
+              key => !parseInt(`${InputType[key]}`) && InputType[key] !== 0,
+            )
+            .map((key, index) => {
+              return (
+                <div className="lg:m-2 mx-1" key={`${index}-${InputType[key]}`}>
+                  <PrimaryButton
+                    type="button"
+                    name={key}
+                    width="w-min"
+                    id={sectionId}
+                    disabled={!sectionId}
+                    textColour="text-white"
+                    key={`${InputType[key]}`}
+                    text={`${InputType[key]}`}
+                    onClick={handleFormFieldsAdd}
+                    buttonClass="flex flex-row items-center font-medium rounded-lg p-1"
+                    childContainerClass="'w-full items-center static text-left not-italic tracking-tight font-base text-xs lg:text-base px-1"
+                  />
+                </div>
+              )
+            })}
+        </div>
       </div>
     </span>
-    <div className="ml-64 w-full h-full bg-transparent">
-      <div className="flex flex-wrap justify-center items-center w-full my-2 ">
-        {(Object.keys(InputType) as Array<keyof typeof InputType>)
-          .filter(key => !parseInt(`${InputType[key]}`) && InputType[key] !== 0)
-          .map((key, index) => {
-            return (
-              <div className="m-2" key={`${index}-${InputType[key]}`}>
-                <PrimaryButton
-                  type="button"
-                  name={key}
-                  width="w-min"
-                  id={sectionId}
-                  disabled={!sectionId}
-                  text={`${InputType[key]}`}
-                  key={`${InputType[key]}`}
-                  onClick={handleFormFieldsAdd}
-                  textColour="text-white"
-                />
-              </div>
-            )
-          })}
-      </div>
-      <div className="relative flex flex-col justify-between min-w-0 max-h-[80vh] break-words bg-gray-400 rounded p-4 space-y-6 overflow-y-scroll">
+    <div className="lg:ml-64 w-full h-full bg-transparent">
+      <div className="relative flex flex-col justify-between min-w-0 max-h-[80vh] break-words bg-gray-400 rounded p-2 space-y-6 overflow-y-scroll">
         {formSections?.length &&
           formSections
             .sort((a, b) => a.order - b.order)

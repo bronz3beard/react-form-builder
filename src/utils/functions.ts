@@ -1,5 +1,3 @@
-import { RefObject } from 'react'
-
 export const groupObjectsByProp = <T, K extends keyof T>(
   array: T[],
   prop: K,
