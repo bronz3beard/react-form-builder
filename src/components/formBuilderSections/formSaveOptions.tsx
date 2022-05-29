@@ -44,9 +44,9 @@ const FormSaveOptions: FC<FormSaveProps> = (props: FormSaveProps) => {
           target="_blank"
           data={cSVExportData}
           filename={`${formName}.csv`}
-          className="flex flex-row w-full items-center static text-center text-white bg-primary-colour not-italic tracking-tight font-base text-xs lg:text-base px-2 font-medium rounded-lg p-2"
+          className="flex flex-row w-full justify-center items-center static text-white bg-primary-colour not-italic tracking-tight font-base text-xs lg:text-base px-2 font-medium rounded-lg p-2"
         >
-          Download CSV
+          <span>Download CSV</span>
         </CSVLink>
       </div>
     </div>
