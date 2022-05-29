@@ -58,7 +58,7 @@ return (
   <div className="flex">
     <span className="lg:fixed absolute lg:w-max w-full top-0 left-0 bg-white overflow-hidden content-center z-40">
       <div className="lg:w-64 lg:h-screen h-min flex flex-col overflow-y-scroll lg:space-y-4 space-y-1">
-        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10">
+        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10 select-none">
           Select Form Section
         </h2>
         {formSections?.length &&
@@ -76,11 +76,11 @@ return (
                   onClick={handleSectionClick}
                   text={`${item.title}(${item.order})`}
                   buttonClass="flex flex-row items-center font-medium p-2"
-                  childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
+                  childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2 select-none"
                 />
               )
             })}
-        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10">
+        <h2 className="text-center lg:text-2xl bg-red-200 flex justify-center items-center h-10 select-none">
           Select a Form Field Type
         </h2>
         <div className="flex flex-wrap lg:justify-start justify-center items-center my-8">
@@ -102,7 +102,7 @@ return (
                     text={`${InputType[key]}`}
                     onClick={handleFormFieldsAdd}
                     buttonClass="flex flex-row items-center font-medium rounded-lg p-1"
-                    childContainerClass="'w-full items-center static text-left not-italic tracking-tight font-base text-xs lg:text-base px-1"
+                    childContainerClass="'w-full items-center static text-left not-italic tracking-tight font-base text-xs lg:text-base px-1 select-none"
                   />
                 </div>
               )
@@ -138,7 +138,7 @@ return (
                           return (myRefs.current[item.order] = ref)
                         }
                       }}
-                      className="w-full text-xl p-6 bg-gray-300 text-white rounded-t-lg hover:cursor-grab active:cursor-grabbing"
+                      className="w-full text-xl p-6 bg-gray-300 text-white rounded-t-lg hover:cursor-grab active:cursor-grabbing select-none"
                     >
                       {item.title}
                     </div>
@@ -162,9 +162,8 @@ return (
                                   id={`${itm.id}#${item.id}`}
                                   onDragStart={handleFieldDragStart}
                                 >
-                                  <div className="flex justify-between items-center mx-6">
-                                    {itm.type}({itm.order + 1}
-                                    )
+                                  <div className="flex justify-between items-center mx-6 select-none">
+                                    {itm.type}({itm.order + 1})
                                     <PrimaryButton
                                       text="X"
                                       type="button"
