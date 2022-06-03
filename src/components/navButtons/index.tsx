@@ -76,16 +76,18 @@ const NavButtonRow: FC<NavButtonProps> = (props: NavButtonProps) => {
           childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
         />
       )}
-      <PrimaryButton
-        text="Back"
-        type="button"
-        width="w-16"
-        onClick={handleBack}
-        name="form-navigation"
-        textColour="text-white"
-        buttonClass="flex flex-row items-center rounded-lg font-medium p-2"
-        childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
-      />
+      {formBuildSection !== FormBuilderSections.NAME && (
+        <PrimaryButton
+          text="Back"
+          type="button"
+          width="w-16"
+          onClick={handleBack}
+          name="form-navigation"
+          textColour="text-white"
+          buttonClass="flex flex-row items-center rounded-lg font-medium p-2"
+          childContainerClass="w-full items-center static text-center not-italic tracking-tight font-base text-xs lg:text-base px-2"
+        />
+      )}
       <PrimaryButton
         text="Next"
         type="button"
