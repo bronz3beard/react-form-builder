@@ -1,5 +1,5 @@
 import React, { useCallback, FC, Dispatch, MouseEvent } from 'react'
-import { FormBuilderSections } from '../../App'
+import { FormBuilderSections } from '../../../App'
 import { clearAllSessionStorage } from '../../utils/sessionStorage'
 import { PrimaryButton } from '../common/button'
 
