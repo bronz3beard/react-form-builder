@@ -54,15 +54,16 @@ export const getFromSessionStorage = (key: string) => {
 export const getFromSessionStorageAsync = async (key: string) => {
   const client = isClientSide()
 
-  let item
   try {
     if (client && isSessionStorageSupported(sessionStorage)) {
       const storageItem: string = sessionStorage.getItem(key) as string
 
-      item = await JSON.parse(storageItem)
-    }
+      const item = await JSON.parse(storageItem)
 
-    return thisStorage[key]
+      return item
+    } else {
+      return thisStorage[key]
+    }
   } catch (e) {
     return null
   }
