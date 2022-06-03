@@ -1,6 +1,6 @@
 import { isClientSide } from './functions'
 
-const myOwnStorage = {} as Record<string, unknown>
+const thisStorage = {} as Record<string, unknown>
 
 const isSessionStorageSupported = (storage: Storage) => {
   if (typeof storage !== 'undefined') {
@@ -18,7 +18,9 @@ const isSessionStorageSupported = (storage: Storage) => {
 }
 
 export const setOnSessionStorage = (key: string, value: any) => {
-  if (isClientSide() && isSessionStorageSupported(sessionStorage)) {
+  const client = isClientSide()
+
+  if (client && isSessionStorageSupported(sessionStorage)) {
     sessionStorage.setItem(
       key,
       JSON.stringify({
@@ -27,61 +29,64 @@ export const setOnSessionStorage = (key: string, value: any) => {
       }),
     )
   } else {
-    myOwnStorage[key] = value
+    thisStorage[key] = value
   }
 }
 
 export const getFromSessionStorage = (key: string) => {
+  const client = isClientSide()
+
   try {
-    if (isSessionStorageSupported(sessionStorage)) {
-      if (isClientSide() && isSessionStorageSupported(sessionStorage)) {
-        const storageItem: string = sessionStorage.getItem(key) as string
+    if (client && isSessionStorageSupported(sessionStorage)) {
+      const storageItem: string = sessionStorage.getItem(key) as string
 
-        const item = JSON.parse(storageItem)
+      const item = JSON.parse(storageItem)
 
-        return item
-      }
-      return myOwnStorage[key]
+      return item
     }
+
+    return thisStorage[key]
   } catch (e) {
     return null
   }
 }
 
 export const getFromSessionStorageAsync = async (key: string) => {
+  const client = isClientSide()
+
   let item
   try {
-    if (isSessionStorageSupported(sessionStorage)) {
-      if (isClientSide() && isSessionStorageSupported(sessionStorage)) {
-        const storageItem: string = sessionStorage.getItem(key) as string
+    if (client && isSessionStorageSupported(sessionStorage)) {
+      const storageItem: string = sessionStorage.getItem(key) as string
 
-        item = await JSON.parse(storageItem)
-      }
-      return myOwnStorage[key]
+      item = await JSON.parse(storageItem)
     }
+
+    return thisStorage[key]
   } catch (e) {
     return null
   }
-  return item
 }
 
 export const removeFromSessionStorage = (key: string) => {
-  if (isSessionStorageSupported(sessionStorage)) {
-    if (isClientSide() && isSessionStorageSupported(sessionStorage)) {
-      sessionStorage.removeItem(key)
-    } else {
-      delete myOwnStorage.key
-    }
+  const client = isClientSide()
+
+  if (client && isSessionStorageSupported(sessionStorage)) {
+    sessionStorage.removeItem(key)
+  } else {
+    delete thisStorage.key
   }
 }
 
 export const clearAllSessionStorage = () => {
-  if (isClientSide() && isSessionStorageSupported(sessionStorage)) {
+  const client = isClientSide()
+
+  if (client && isSessionStorageSupported(sessionStorage)) {
     sessionStorage.clear()
   } else {
     // using forEach because i dont want to return anything.
-    Object.keys(myOwnStorage).forEach((key: string) => {
-      delete myOwnStorage[key]
+    Object.keys(thisStorage).forEach((key: string) => {
+      delete thisStorage[key]
     })
   }
 }
