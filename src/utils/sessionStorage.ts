@@ -2,11 +2,10 @@ import { isClientSide } from './functions'
 
 const myOwnStorage = {} as Record<string, unknown>
 
-// inspired by this https://michalzalecki.com/why-using-localStorage-directly-is-a-bad-idea/
 const isSessionStorageSupported = (storage: Storage) => {
   if (typeof storage !== 'undefined') {
     try {
-      const key = '__some_key_we_are_just_using_to_check__'
+      const key = '__some_random_key__'
       storage.setItem(key, key)
       storage.removeItem(key)
       return true
