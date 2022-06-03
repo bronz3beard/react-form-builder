@@ -9,7 +9,7 @@ import FormSections from './components/formBuilderSections/formSections'
 import NavButtonRow from './components/navButtons'
 import { FormSection, FormFieldType, InputType } from './formTypes'
 import useDragDrop from './hooks/useDragDrop'
-import useStateWithLocal from './hooks/useStateWithLocal'
+import useStateWithSession from './hooks/useStateWithSession'
 
 export enum FormBuilderSections {
   NAME,
@@ -26,12 +26,12 @@ export interface AppProps {
 const App: FC<AppProps> = (props: AppProps) => {
   const { hostName } = props
   const [formBuildSection, setFormBuildSection] =
-    useStateWithLocal<FormBuilderSections>(
+    useStateWithSession<FormBuilderSections>(
       'formBuildSection',
       FormBuilderSections.NAME,
     )
-  const [formName, setFormName] = useStateWithLocal<string>('formName', '')
-  const [formSections, setFormSections] = useStateWithLocal<FormSection[]>(
+  const [formName, setFormName] = useStateWithSession<string>('formName', '')
+  const [formSections, setFormSections] = useStateWithSession<FormSection[]>(
     'formSections',
     [],
   )

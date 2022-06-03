@@ -1,6 +1,6 @@
 import React, { Dispatch, DragEvent } from 'react'
 import { FormFieldType, FormSection } from '../formTypes'
-import useStateWithLocal from './useStateWithLocal'
+import useStateWithSession from './useStateWithSession'
 
 export type Section = {
     handleSectionDragOver: (event: DragEvent<HTMLDivElement>) => void
@@ -23,13 +23,13 @@ const useDragDrop = (
     formSections: FormSection[],
     setFormSections: Dispatch<FormSection[]>,
 ): DragAndDropProps => {
-    const [sectionDragId, setSectionDragId] = useStateWithLocal<string>(
-        'sectionDragId',
-        '',
+    const [sectionDragId, setSectionDragId] = useStateWithSession<string>(
+      'sectionDragId',
+      '',
     )
-    const [fieldDragId, setFieldDragId] = useStateWithLocal<string>(
-        'fieldDragId',
-        '',
+    const [fieldDragId, setFieldDragId] = useStateWithSession<string>(
+      'fieldDragId',
+      '',
     )
 
     const handleSectionDragOver = (event: DragEvent<HTMLDivElement>) => {
